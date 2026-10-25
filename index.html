@@ -1801,11 +1801,16 @@ $('#backBtn').innerHTML=ICON.home+'<span>Home</span>';
 $('#countIcon').innerHTML=carrotSVG('');
 $('#backBtn').onclick=function(){sfx('tick');go('home');};
 $('#soundBtn').onclick=function(){S.prefs.sound=!S.prefs.sound;save();paintSound();if(S.prefs.sound)sfx('tick');else stopVoice();};
+/* iPads mute Web Audio when the silent switch is on; playing a silent <audio> clip switches the page to media playback so Clover can still be heard. */
+function unmuteTrick(){
+  try{if(navigator.audioSession)navigator.audioSession.type='playback';}catch(e){}
+  try{var a=document.createElement('audio');a.src='data:audio/wav;base64,UklGRkQDAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YSADAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgA==';a.loop=true;a.setAttribute('playsinline','');a.volume=.01;document.body.appendChild(a);var pr=a.play();if(pr&&pr.catch)pr.catch(function(){});}catch(e){}
+}
 function showSplash(){
   var m=$('#splash');m.hidden=false;
   m.innerHTML='<div class="modal-card splash-card"><div class="rabbit-wrap big" id="splashRabbit">'+rabbit()+'</div><div class="m-name">Bunny Meadow</div><button class="btn big" id="playBtn">'+ic('\u25B6\uFE0F','Let\'s play!')+'</button></div>';
   $('#playBtn').onclick=function(){
-    audioReady=true;sfx('pop');m.hidden=true;m.innerHTML='';
+    audioReady=true;unmuteTrick();sfx('pop');m.hidden=true;m.innerHTML='';
     var hb=$('#s-home .bubble');if(hb&&cur==='home')clover(hb.dataset.key);
     var hr=$('#homeRabbit');if(hr)mood(hr,'happy',1300);
     preload();setTimeout(flushReveal,2500);
