@@ -84,6 +84,9 @@ h2{margin:0}
 .g-txt{display:flex;flex-direction:column;gap:4px;min-width:0}
 .g-t{font:600 1.5rem/1.1 var(--font-display)}
 .g-b{color:var(--ink-soft);font-size:1rem}
+.g-prog{display:flex;align-items:center;gap:10px;margin-top:8px;font:700 .95rem var(--font-display);color:var(--ink)}
+.g-prog .bar{flex:1;height:12px;border-radius:99px;background:#fff;border:2px solid var(--edge);overflow:hidden}
+.g-prog .bar i{display:block;height:100%;background:var(--carrot);border-radius:99px}
 .home-cols{display:grid;gap:16px;grid-template-columns:minmax(0,1fr)}
 @media(min-width:820px){.home-cols{grid-template-columns:minmax(0,1.5fr) minmax(0,1fr)}}
 .list{display:flex;flex-direction:column;gap:12px;padding:14px}
@@ -1619,6 +1622,10 @@ function missionCard(track){
     '<div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="'+m.g+'" aria-valuenow="'+v+'"><i style="width:'+pct+'%"></i></div></div>'+
     '<div class="m-num">'+v+'<span>/'+m.g+'</span></div></div>';
 }
+function advProg(){
+  var d=Math.min(S.stats.adv||0,STAGES.length);
+  return '<span class="g-prog"><span>'+(d>=STAGES.length?'\uD83C\uDFC6 All '+STAGES.length+' stops!':d+' / '+STAGES.length+' stops')+'</span><span class="bar"><i style="width:'+Math.round(d/STAGES.length*100)+'%"></i></span></span>';
+}
 function renderHome(){
   var got=Object.keys(S.stickers).length;
   var hk=got?'back':'hello';
@@ -1629,7 +1636,7 @@ function renderHome(){
     '<div class="card hero">'+(profById(P.active)?'<button class="who-chip" data-go="who" aria-label="Change player"><span class="av">'+profById(P.active).av+'</span>'+(profById(P.active).name?'<span>'+esc(profById(P.active).name)+'</span>':'')+'<span class="sw" aria-hidden="true">\uD83D\uDD04</span></button>':'')+'<div class="rabbit-wrap" id="homeRabbit">'+rabbit()+'</div><div class="bubble" id="bubble" data-key="'+hk+'">'+LINES[hk]+'</div></div>'+
     '<h2 class="sec" style="margin-top:20px">Pick a game</h2>'+
     '<div class="games">'+GAMES.map(function(g){
-      return '<button class="game" style="--tint:'+g.tint+'" data-game="'+g.id+'"><span class="g-ico">'+g.icon()+'</span><span class="g-txt"><span class="g-t">'+g.title+'</span><span class="g-b">'+g.blurb+'</span></span></button>';
+      return '<button class="game" style="--tint:'+g.tint+'" data-game="'+g.id+'"><span class="g-ico">'+g.icon()+'</span><span class="g-txt"><span class="g-t">'+g.title+'</span><span class="g-b">'+g.blurb+'</span>'+(g.id==='adventure'?advProg():'')+'</span></button>';
     }).join('')+'</div>'+
     '<div class="home-cols" style="margin-top:20px"><section><h2 class="sec">Missions</h2><div class="card list">'+TRACKS.map(missionCard).join('')+'</div></section>'+
     '<section><h2 class="sec">Sticker book</h2><button class="card book-card" data-go="stickers"><span class="mini-row">'+row+'</span>'+
